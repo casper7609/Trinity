@@ -1,5 +1,5 @@
 handlers.PurchaseCharacter = function (args) {
-    log.info("PlayFabId " + args.PlayFabId);
+    log.info("PlayFabId " + currentPlayerId);
     log.info("ClassType " + args.ClassType);
     log.info("ClassStatus " + args.ClassStatus);
     var classType = args.ClassType;
