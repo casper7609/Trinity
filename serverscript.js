@@ -1,3 +1,4 @@
+var catalogVersion = "0.9";
 handlers.PurchaseCharacter = function (args) {
     log.info("PlayFabId " + currentPlayerId);
     log.info("ClassType " + args.ClassType);
