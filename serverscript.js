@@ -51,10 +51,12 @@ handlers.PurchaseCharacter = function (args) {
         "CharacterId": characterId,
         "Data": classStatus
     });
+    var isActive = allChars.Characters.length == 0;
+    var isLeader = allChars.Characters.length == 0;
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
         "CharacterId": characterId,
-        "Data": { "Luck": luck, "IsActive": "true" }
+        "Data": { "Luck": luck, "IsActive": isActive, "IsLeader": isLeader }
     });
     var itemId = "";
     if (classType == "Rogue") {
