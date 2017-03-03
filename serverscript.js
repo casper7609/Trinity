@@ -102,16 +102,37 @@ handlers.KilledMob = function (args)
         items.push(townItem.ResultItemId);
     }
     if (items.length > 0) {
-        for (var i = 0; i < items.length; i++) {
-            var itemGrantResult = server.GrantItemsToUser(
-                {
-                    "CatalogVersion": catalogVersion,
-                    "PlayFabId": currentPlayerId,
-                    "ItemIds": items
-                }
-            );
-        }
+        var itemGrantResult = server.GrantItemsToUser(
+            {
+                "CatalogVersion": catalogVersion,
+                "PlayFabId": currentPlayerId,
+                "ItemIds": items
+            }
+        );
+        //add random stat here
     }
     var result = { "ItemCount": items.length };
     return result;
+};
+handlers.DecomposeItems = function (args) {
+    var items = JSON.parse(args.Items);
+    var totalPrice = 0;
+    for (var i = 0; i < item.length; i++)
+    {
+        var itemInstance = item[i];
+        var consumeItemResult = server.ConsumeItem({
+            "PlayFabId": currentPlayerId,
+            "ItemInstanceId": itemInstance.ItemInstanceId,
+            "ConsumeCount": 1
+        });
+        totalPrice += itemInstance.UnitPrice;
+    }
+    var goldGainResult = server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "IP",
+            "Amount": totalPrice
+        }
+    );
+    return { "IP": totalPrice };
 };
