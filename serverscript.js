@@ -148,6 +148,10 @@ handlers.EnchantItem = function (args) {
     //0~4, 5~9, 
     var IPToEnchant = Math.floor(enchantPriceInIP * Math.pow(1.4, enchantLevel));
 
+    var userInventory = server.GetUserInventory({
+        "PlayFabId": currentPlayerId
+    });
+
     //check if sufficient fund
     if (userInventory.VirtualCurrency == null
         || userInventory.VirtualCurrency.IP == null
