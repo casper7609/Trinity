@@ -117,9 +117,9 @@ handlers.KilledMob = function (args)
 handlers.DecomposeItems = function (args) {
     var items = JSON.parse(args.Items);
     var totalPrice = 0;
-    for (var i = 0; i < item.length; i++)
+    for (var i = 0; i < items.length; i++)
     {
-        var itemInstance = item[i];
+        var itemInstance = items[i];
         var consumeItemResult = server.ConsumeItem({
             "PlayFabId": currentPlayerId,
             "ItemInstanceId": itemInstance.ItemInstanceId,
