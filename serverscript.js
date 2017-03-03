@@ -1,5 +1,9 @@
 var catalogVersion = "0.9";
 var enchantPriceInIP = 10;
+var spDefault = 10;
+function rand(from, to) {
+    return Math.floor((Math.random() * to) + from);
+}
 handlers.PurchaseCharacter = function (args) {
     log.info("PlayFabId " + currentPlayerId);
     log.info("ClassType " + args.ClassType);
@@ -87,8 +91,9 @@ handlers.PurchaseCharacter = function (args) {
 handlers.KilledMob = function (args)
 {
     var mobType = args.MobType;
-    var dungeonLevel = args.DungeonLevel;
-    var townId = "Town_" + Math.floor((parseInt(dungeonLevel) / 500));
+    var dungeonLevel = parseInt(args.DungeonLevel);
+    var sp = Math.floor(spDefault * Math.pow(1.2, dungeonLevel));
+    var townId = "Town_" + Math.floor(dungeonLevel / 500);
     var items = [];
 
     var townItem = server.EvaluateRandomResultTable(
@@ -111,7 +116,31 @@ handlers.KilledMob = function (args)
             }
         );
         //add random stat here
+        for (var i = 0; i < itemGrantResult.length; i++)
+        {
+            //var arr = []
+            //while(arr.length < 3){
+            //    var randomnumber = rand(0, 7);
+            //    if(arr.indexOf(randomnumber) > -1) continue;
+            //    arr[arr.length] = randomnumber;
+            //}
+
+
+            server.UpdateUserInventoryItemCustomData({
+                PlayFabId: currentPlayerId,
+                CharacterId: characterId,
+                ItemInstanceId: itemToEnchant.ItemInstanceId,
+                Data: { "Enchant": 0, "Strength" : 10, "Dexterity":10 },
+            });
+        }
     }
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "SP",
+            "Amount": sp
+        }
+    );
     var result = { "ItemCount": items.length };
     return result;
 };
