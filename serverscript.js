@@ -1,4 +1,5 @@
 var catalogVersion = "0.9";
+var enchantPriceInIP = 10;
 handlers.PurchaseCharacter = function (args) {
     log.info("PlayFabId " + currentPlayerId);
     log.info("ClassType " + args.ClassType);
@@ -135,4 +136,36 @@ handlers.DecomposeItems = function (args) {
         }
     );
     return { "IP": totalPrice };
+};
+handlers.EnchantItem = function (args) {
+    var characterId = args.CharacterId;
+    var itemToEnchant = JSON.parse(args.ItemInstance);
+    var enchantLevel = 0;
+
+    if (itemToEnchant.CustomData != null && itemToEnchant.CustomData.Enchant != null) {
+        enchantLevel = parseInt(itemToEnchant.CustomData.Enchant);
+    }
+    //0~4, 5~9, 
+    var IPToEnchant = Math.floor(enchantPriceInIP * Math.pow(1.4, enchantLevel));
+
+    //check if sufficient fund
+    if (userInventory.VirtualCurrency == null
+        || userInventory.VirtualCurrency.IP == null
+        || parseInt(userInventory.VirtualCurrency.IP) < IPToEnchant) {
+        log.info("Insufficient Fund");
+        return { "Error": "Insufficient Fund" };
+    }
+    server.SubtractUserVirtualCurrency({
+        "PlayFabId": currentPlayerId,
+        "VirtualCurrency": "IP",
+        "Amount": IPToEnchant
+    });
+    enchantLevel++;
+    var enchantSuccessResult = server.UpdateUserInventoryItemCustomData({
+        PlayFabId: currentPlayerId,
+        CharacterId: characterId,
+        ItemInstanceId: itemInstanceId,
+        Data: { "Enchant": enchantLevel },
+    });
+    return {};
 };
