@@ -83,3 +83,35 @@ handlers.PurchaseCharacter = function (args) {
     log.info("grantItemResult " + JSON.stringify(grantItemResult));
     return characterId;
 };
+handlers.KilledMob = function (args)
+{
+    var mobType = args.MobType;
+    var dungeonLevel = args.DungeonLevel;
+    var townId = "Town_" + (parseInt(dungeonLevel) / 500);
+    var items = [];
+
+    var townItem = server.EvaluateRandomResultTable(
+        {
+            "CatalogVersion": catalogVersion,
+            "PlayFabId": currentPlayerId,
+            "TableId": townId
+        }
+    );
+    if (townItem.ResultItemId != "Nothing") {
+        log.info("item " + JSON.stringify(townItem));
+        items.push(townItem.ResultItemId);
+    }
+    if (items.length > 0) {
+        for (var i = 0; i < items.length; i++) {
+            var itemGrantResult = server.GrantItemsToUser(
+                {
+                    "CatalogVersion": catalogVersion,
+                    "PlayFabId": currentPlayerId,
+                    "ItemIds": items
+                }
+            );
+        }
+    }
+    var result = { "ItemCount": items.length };
+    return result;
+};
