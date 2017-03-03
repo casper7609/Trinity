@@ -87,7 +87,7 @@ handlers.KilledMob = function (args)
 {
     var mobType = args.MobType;
     var dungeonLevel = args.DungeonLevel;
-    var townId = "Town_" + (parseInt(dungeonLevel) / 500);
+    var townId = "Town_" + Math.floor((parseInt(dungeonLevel) / 500));
     var items = [];
 
     var townItem = server.EvaluateRandomResultTable(
