@@ -168,7 +168,7 @@ handlers.EnchantItem = function (args) {
     var enchantSuccessResult = server.UpdateUserInventoryItemCustomData({
         PlayFabId: currentPlayerId,
         CharacterId: characterId,
-        ItemInstanceId: itemInstanceId,
+        ItemInstanceId: itemToEnchant.ItemInstanceId,
         Data: { "Enchant": enchantLevel },
     });
     return {};
