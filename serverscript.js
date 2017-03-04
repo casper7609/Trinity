@@ -1,6 +1,7 @@
 var catalogVersion = "0.9";
 var enchantPriceInIP = 10;
 var spDefault = 10;
+var slDefault = 10;
 function rand(from, to) {
     return Math.floor((Math.random() * to) + from);
 }
@@ -61,7 +62,12 @@ handlers.PurchaseCharacter = function (args) {
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
         "CharacterId": characterId,
-        "Data": { "Luck": luck, "IsActive": isActive, "IsLeader": isLeader, "Level": 0, "SoulLevel": 0}
+        "Data": { "Luck": luck, "IsActive": isActive, "IsLeader": isLeader, "Level": 0}
+    });
+    server.UpdateCharacterData({
+        "PlayFabId": currentPlayerId,
+        "CharacterId": characterId,
+        "Data": { "SoulAttackLevel": 0, "SoulHitPointLevel": 0 }
     });
     var itemId = "";
     if (classType == "Rogue") {
@@ -93,6 +99,7 @@ handlers.KilledMob = function (args)
     var mobType = args.MobType;
     var dungeonLevel = parseInt(args.DungeonLevel);
     var sp = Math.floor(spDefault * Math.pow(1.2, dungeonLevel));
+    var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel));
     var townId = "Town_" + Math.floor(dungeonLevel / 500);
     var items = [];
 
@@ -137,6 +144,13 @@ handlers.KilledMob = function (args)
             "PlayFabId": currentPlayerId,
             "VirtualCurrency": "SP",
             "Amount": sp
+        }
+    );
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "SL",
+            "Amount": sl
         }
     );
     var result = { "ItemCount": items.length };
