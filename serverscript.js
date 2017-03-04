@@ -220,7 +220,7 @@ handlers.EquipItem = function (args) {
 };
 handlers.UnEquipItem = function (args) {
     server.MoveItemToUserFromCharacter({
-        "PlayFabId": args.PlayFabId,
+        "PlayFabId": currentPlayerId,
         "CharacterId": args.CharacterId,
         "ItemInstanceId": args.PrevItemInstanceId
     });
