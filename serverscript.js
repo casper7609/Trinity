@@ -2,6 +2,7 @@ var catalogVersion = "0.9";
 var enchantPriceInIP = 10;
 var spDefault = 10;
 var slDefault = 10;
+var cpDefault = 10;
 function rand(from, to) {
     return Math.floor((Math.random() * to) + from);
 }
@@ -100,9 +101,10 @@ handlers.KilledMob = function (args)
     var dungeonLevel = parseInt(args.DungeonLevel);
     var sp = Math.floor(spDefault * Math.pow(1.2, dungeonLevel));
     var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel));
+    var cp = Math.floor(cpDefault * Math.pow(1.2, dungeonLevel));
     var townId = "Town_" + Math.floor(dungeonLevel / 500);
     var items = [];
-
+    //check user inventory count
     var townItem = server.EvaluateRandomResultTable(
         {
             "CatalogVersion": catalogVersion,
@@ -151,6 +153,13 @@ handlers.KilledMob = function (args)
             "PlayFabId": currentPlayerId,
             "VirtualCurrency": "SL",
             "Amount": sl
+        }
+    );
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "CP",
+            "Amount": cp
         }
     );
     var result = { "ItemCount": items.length };
