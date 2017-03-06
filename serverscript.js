@@ -375,3 +375,39 @@ handlers.GetServerTime = function (args)
 {
     return { "Time" : new Date().getTime()};
 };
+handlers.RewardQuest = function (args) {
+    var userData = server.GetUserData(
+         {
+             "PlayFabId": currentPlayerId,
+             "Keys": [
+                 "DailyQuest"
+             ]
+         }
+     );
+    var dailyQuests = JSON.parse(userData.Data.DailyQuest.Value.replace(/\\/g, ""));
+    var quest = null;
+    for (var i = 0; i < dailyQuests.length; i++) {
+        if (dailyQuests[i].QuestType == args.QuestType) {
+            quest = dailyQuests[i];
+            break;
+        }
+    }
+    quest.HasReceivedReward = true;
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": quest.QuestReward.QuestRewardType,
+            "Amount": parseInt(quest.QuestReward.Count)
+        }
+    );
+    var commitData = {};
+    commitData["DailyQuest"] = JSON.stringify(dailyQuests);
+    server.UpdateUserData(
+		{
+		    "PlayFabId": currentPlayerId,
+		    "Data": commitData
+		}
+	);
+    return {};
+};
+
