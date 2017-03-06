@@ -104,44 +104,50 @@ handlers.KilledMob = function (args)
     var sp = Math.floor(spDefault * Math.pow(1.2, dungeonLevel));
     var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel));
     var cp = Math.floor(cpDefault * Math.pow(1.2, dungeonLevel));
-    var townId = "Town_" + Math.floor(dungeonLevel / 500);
-    var items = [];
-    var townItem = server.EvaluateRandomResultTable(
-        {
-            "CatalogVersion": catalogVersion,
-            "PlayFabId": currentPlayerId,
-            "TableId": townId
-        }
-    );
-    if (townItem.ResultItemId != "Nothing") {
-        log.info("item " + JSON.stringify(townItem));
-        items.push(townItem.ResultItemId);
-    }
-    if (items.length > 0) {
-        var itemGrantResult = server.GrantItemsToUser(
+    var userInventory = server.GetUserInventory({
+        "PlayFabId": currentPlayerId
+    });
+    if (userInventory.Inventory.length < 10)
+    {
+        var townId = "Town_" + Math.floor(dungeonLevel / 500);
+        var items = [];
+        var townItem = server.EvaluateRandomResultTable(
             {
                 "CatalogVersion": catalogVersion,
                 "PlayFabId": currentPlayerId,
-                "ItemIds": items
+                "TableId": townId
             }
         );
-        //add random stat here
-        for (var i = 0; i < itemGrantResult.length; i++)
-        {
-            //var arr = []
-            //while(arr.length < 3){
-            //    var randomnumber = rand(0, 7);
-            //    if(arr.indexOf(randomnumber) > -1) continue;
-            //    arr[arr.length] = randomnumber;
-            //}
-            server.UpdateUserInventoryItemCustomData({
-                PlayFabId: currentPlayerId,
-                CharacterId: characterId,
-                ItemInstanceId: itemToEnchant.ItemInstanceId,
-                Data: { "Enchant": 0, "Strength" : 10, "Dexterity":10 },
-            });
+        if (townItem.ResultItemId != "Nothing") {
+            log.info("item " + JSON.stringify(townItem));
+            items.push(townItem.ResultItemId);
+        }
+        if (items.length > 0) {
+            var itemGrantResult = server.GrantItemsToUser(
+                {
+                    "CatalogVersion": catalogVersion,
+                    "PlayFabId": currentPlayerId,
+                    "ItemIds": items
+                }
+            );
+            //add random stat here
+            for (var i = 0; i < itemGrantResult.length; i++) {
+                //var arr = []
+                //while(arr.length < 3){
+                //    var randomnumber = rand(0, 7);
+                //    if(arr.indexOf(randomnumber) > -1) continue;
+                //    arr[arr.length] = randomnumber;
+                //}
+                server.UpdateUserInventoryItemCustomData({
+                    PlayFabId: currentPlayerId,
+                    CharacterId: characterId,
+                    ItemInstanceId: itemToEnchant.ItemInstanceId,
+                    Data: { "Enchant": 0, "Strength": 10, "Dexterity": 10 },
+                });
+            }
         }
     }
+    
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
