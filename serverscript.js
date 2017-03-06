@@ -1,4 +1,6 @@
 var catalogVersion = "0.9";
+var LVL_UP_PAC = "LVL_UP_PAC";
+var MON_SUB_PAC = "MON_SUB_PAC";
 var enchantPriceInIP = 10;
 var spDefault = 10;
 var slDefault = 10;
@@ -104,7 +106,6 @@ handlers.KilledMob = function (args)
     var cp = Math.floor(cpDefault * Math.pow(1.2, dungeonLevel));
     var townId = "Town_" + Math.floor(dungeonLevel / 500);
     var items = [];
-    //check user inventory count
     var townItem = server.EvaluateRandomResultTable(
         {
             "CatalogVersion": catalogVersion,
@@ -247,4 +248,124 @@ handlers.UnEquipItem = function (args) {
         "CharacterId": args.CharacterId,
         "ItemInstanceId": args.PrevItemInstanceId
     });
+};
+handlers.InAppPurchase = function (args) {
+    if (args.ItemId == "lvluppackage") {
+        var UpdateUserReadOnlyDataRequest = {
+            "PlayFabId": currentPlayerId,
+            "Data": {}
+        };
+        UpdateUserReadOnlyDataRequest.Data[LVL_UP_PAC] = JSON.stringify({ "TransactionId": args.TransactionId });
+        server.UpdateUserReadOnlyData(UpdateUserReadOnlyDataRequest);
+        var curHighestLevel = GetHigestLevel();
+        checkLevelUpPackage(curHighestLevel);
+    }
+    else if (args.ItemId == "monthlypackage") {
+        var monUpdateUserReadOnlyDataRequest = {
+            "PlayFabId": currentPlayerId,
+            "Data": {}
+        };
+        monUpdateUserReadOnlyDataRequest.Data[MON_SUB_PAC] = JSON.stringify({
+            "TransactionId": args.TransactionId,
+            "Date": 1,
+            "NextTime": getKoreanTomorrow()
+        });
+        GrantItems(currentPlayerId, "GP100", "30일 패키지 보상입니다. ( " + 0 + "일)");
+        server.UpdateUserReadOnlyData(monUpdateUserReadOnlyDataRequest);
+    }
+};
+handlers.CheckMonthlySubscription = function (args) {
+    var getUserReadOnlyDataResponse = server.GetUserReadOnlyData({
+        "PlayFabId": currentPlayerId,
+        "Keys": [MON_SUB_PAC]
+    });
+    var tracker = {};
+    if (getUserReadOnlyDataResponse.Data.hasOwnProperty(MON_SUB_PAC)) {
+        tracker = JSON.parse(getUserReadOnlyDataResponse.Data[MON_SUB_PAC].Value);
+        var UpdateUserReadOnlyDataRequest = {
+            "PlayFabId": currentPlayerId,
+            "Data": {}
+        };
+        if (tracker.Date >= 30) {
+            //delete
+            UpdateUserReadOnlyDataRequest.KeysToRemove = [MON_SUB_PAC];
+        }
+        else//check time
+        {
+            var currentTime = new Date().getTime();
+            //after one day
+            if (tracker.NextTime < currentTime) {
+                GrantItems(currentPlayerId, "GP300", "30일 패키지 보상입니다. (" + tracker.Date + " 일)");
+                tracker.NextTime = getKoreanTomorrow();
+                tracker.Date++;
+                if (tracker.Date >= 30) {
+                    UpdateUserReadOnlyDataRequest.KeysToRemove = [MON_SUB_PAC];
+                }
+                else {
+                    UpdateUserReadOnlyDataRequest.Data[MON_SUB_PAC] = JSON.stringify(tracker);
+                }
+            }
+        }
+        server.UpdateUserReadOnlyData(UpdateUserReadOnlyDataRequest);
+    }
+};
+function getKoreanTomorrow() {
+    var currentDate = new Date();
+    currentDate.setUTCDate(currentDate.getUTCDate() + 1);
+    currentDate.setUTCHours(15, 0, 0, 0);
+    return currentDate.getTime();
+}
+function checkLevelUpPackage(curHighestLevel) {
+    var getUserReadOnlyDataResponse = server.GetUserReadOnlyData({
+        "PlayFabId": currentPlayerId,
+        "Keys": [LVL_UP_PAC]
+    });
+    var tracker = {};
+    if (!getUserReadOnlyDataResponse.Data.hasOwnProperty(LVL_UP_PAC)) {
+        return;
+    }
+    else {
+        tracker = JSON.parse(getUserReadOnlyDataResponse.Data[LVL_UP_PAC].Value);
+
+        var lvlFrom = 1;
+        if (tracker.Level != null) {
+            lvlFrom = tracker.Level;
+        }
+        for (var i = lvlFrom; i < curHighestLevel; i++) {
+            GrantItems(currentPlayerId, "GP200", "Lv." + i + " 레벨업 패키지 보상입니다.");
+        }
+
+        tracker.Level = curHighestLevel;
+        var UpdateUserReadOnlyDataRequest = {
+            "PlayFabId": currentPlayerId,
+            "Data": {}
+        };
+        UpdateUserReadOnlyDataRequest.Data[LVL_UP_PAC] = JSON.stringify(tracker);
+        server.UpdateUserReadOnlyData(UpdateUserReadOnlyDataRequest);
+    }
+}
+function GrantItems(userId, items, annotation) {
+    log.info("Granting: " + items);
+    var parsed = Array.isArray(items) ? items : [items];
+
+    var GrantItemsToUserRequest = {
+        "CatalogVersion": catalogVersion,
+        "PlayFabId": userId,
+        "ItemIds": parsed,
+        "Annotation": annotation
+    };
+
+    var GrantItemsToUserResult = server.GrantItemsToUser(GrantItemsToUserRequest);
+
+    var updateReasonResult = server.UpdateUserInventoryItemCustomData({
+        PlayFabId: userId,
+        ItemInstanceId: GrantItemsToUserResult.ItemGrantResults.ItemInstanceId,
+        Data: { "Reason": annotation },
+    });
+
+    return JSON.stringify(GrantItemsToUserResult.ItemGrantResults);
+}
+handlers.GetServerTime = function (args)
+{
+    return { "Time" : new Date().getTime()};
 };
