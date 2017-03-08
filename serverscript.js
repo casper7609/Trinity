@@ -374,7 +374,7 @@ function GrantItems(userId, items, annotation) {
         });
     }
 
-    return JSON.stringify(GrantItemsToUserResult.ItemGrantResults);
+    return JSON.stringify(grantItemsToUserResult.ItemGrantResults);
 }
 handlers.GetServerTime = function (args)
 {
