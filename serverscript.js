@@ -519,13 +519,17 @@ handlers.MassiveSoul = function (args) {
     }
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
     var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel)) * multiplier;
-    server.SubtractUserVirtualCurrency(
-        {
-            "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "GP",
-            "Amount": gemPrice
-        }
-    );
+    if (gemPrice > 0)
+    {
+        server.SubtractUserVirtualCurrency(
+            {
+                "PlayFabId": currentPlayerId,
+                "VirtualCurrency": "GP",
+                "Amount": gemPrice
+            }
+        );
+    }
+    
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
