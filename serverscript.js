@@ -361,8 +361,10 @@ function GrantItems(userId, items, annotation) {
         "Annotation": annotation
     };
 
+    log.info("Item Granted: " + JSON.stringify(GrantItemsToUserRequest));
     var GrantItemsToUserResult = server.GrantItemsToUser(GrantItemsToUserRequest);
 
+    log.info("Item ID: " + GrantItemsToUserResult.ItemGrantResults.ItemInstanceId);
     var updateReasonResult = server.UpdateUserInventoryItemCustomData({
         PlayFabId: userId,
         ItemInstanceId: GrantItemsToUserResult.ItemGrantResults.ItemInstanceId,
