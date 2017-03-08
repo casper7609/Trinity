@@ -107,10 +107,10 @@ handlers.KilledMob = function (args)
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
+    var items = [];
     if (userInventory.Inventory.length < 10)
     {
         var townId = "Town_" + Math.floor(dungeonLevel / 500);
-        var items = [];
         var townItem = server.EvaluateRandomResultTable(
             {
                 "CatalogVersion": catalogVersion,
