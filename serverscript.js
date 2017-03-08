@@ -1,6 +1,7 @@
 var catalogVersion = "0.9";
 var LVL_UP_PAC = "LVL_UP_PAC";
 var MON_SUB_PAC = "MON_SUB_PAC";
+var UserInventoryMax = 20;
 var enchantPriceInIP = 10;
 var spDefault = 10;
 var slDefault = 10;
@@ -108,7 +109,20 @@ handlers.KilledMob = function (args)
         "PlayFabId": currentPlayerId
     });
     var items = [];
-    if (userInventory.Inventory.length < 10)
+    var invMax = UserInventoryMax;
+    var userData = server.GetUserData(
+        {
+            "PlayFabId": currentPlayerId,
+            "Keys": [
+                "UserInventoryMax"
+            ]
+        }
+    );
+    if (userData.UserInventoryMax && userData.UserInventoryMax.Value)
+    {
+        invMax = (userData.UserInventoryMax.Value);
+    }
+    if (userInventory.Inventory.length < invMax)
     {
         var townId = "Town_" + Math.floor(dungeonLevel / 500);
         var townItem = server.EvaluateRandomResultTable(
@@ -488,4 +502,43 @@ handlers.SummonItem = function (args) {
     var result = {};
     result.Items = realItems;
     return result;
+};
+handlers.MassiveSoul = function (args) {
+    var gemPrice = parseInt(args.Gem);
+    var multiplier = 10;
+    if (gemPrice == 0)
+    {
+        multiplier = 10;
+    }
+    else if (gemPrice == 50) {
+        multiplier = 100;
+    }
+    else
+    {
+        multiplier = 0;
+    }
+    var dungeonLevel = parseInt(args.DungeonLevel) + 1;
+    var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel)) * multiplier;
+    server.SubtractUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "GP",
+            "Amount": gemPrice
+        }
+    );
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "SL",
+            "Amount": sl
+        }
+    );
+};
+handlers.TranscendenceScroll = function (args) {
+    server.UpdateUserData(
+		{
+		    "PlayFabId": currentPlayerId,
+		    "Data": commitData
+		}
+	);
 };
