@@ -361,15 +361,18 @@ function GrantItems(userId, items, annotation) {
         "Annotation": annotation
     };
 
-    log.info("Item Granted: " + JSON.stringify(GrantItemsToUserRequest));
-    var GrantItemsToUserResult = server.GrantItemsToUser(GrantItemsToUserRequest);
+    var grantItemsToUserResult = server.GrantItemsToUser(GrantItemsToUserRequest);
 
-    log.info("Item ID: " + GrantItemsToUserResult.ItemGrantResults.ItemInstanceId);
-    var updateReasonResult = server.UpdateUserInventoryItemCustomData({
-        PlayFabId: userId,
-        ItemInstanceId: GrantItemsToUserResult.ItemGrantResults.ItemInstanceId,
-        Data: { "Reason": annotation },
-    });
+    log.info("Item Granted: " + JSON.stringify(grantItemsToUserResult));
+    for (var i = 0; i < grantItemsToUserResult.ItemGrantResults.length; i++)
+    {
+        log.info("Item ID: " + grantItemsToUserResult.ItemGrantResults[i].ItemInstanceId);
+        var updateReasonResult = server.UpdateUserInventoryItemCustomData({
+            PlayFabId: userId,
+            ItemInstanceId: grantItemsToUserResult.ItemGrantResults[i].ItemInstanceId,
+            Data: { "Reason": annotation },
+        });
+    }
 
     return JSON.stringify(GrantItemsToUserResult.ItemGrantResults);
 }
