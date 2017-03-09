@@ -6,6 +6,7 @@ var enchantPriceInIP = 10;
 var spDefault = 10;
 var slDefault = 10;
 var cpDefault = 10;
+var lpDefault = 20;
 function rand(from, to) {
     return Math.floor((Math.random() * to) + from);
 }
@@ -538,11 +539,51 @@ handlers.MassiveSoul = function (args) {
         }
     );
 };
-handlers.TranscendenceScroll = function (args) {
+handlers.ReturnToFirstTown = function (args)
+{
+    var gem = parseInt(args.Gem);
+    var dungeonLevel = parseInt(args.DungeonLevel);
+    var townLevel = parseInt(args.TownLevel);
+    var amplifier = Math.floor(townLevel * 100 + (dungeonLevel + 1));
+    var lp = Math.floor(lpDefault * Math.pow(1.2, amplifier));
+    if (gem == 0)
+    {
+    }
+    else
+    {
+        server.SubtractUserVirtualCurrency(
+            {
+                "PlayFabId": currentPlayerId,
+                "VirtualCurrency": "GP",
+                "Amount": gem
+            }
+        );
+        lp = Math.floor(lp * 2);
+    }
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "LP",
+            "Amount": lp
+        }
+    );
+    
     server.UpdateUserData(
 		{
 		    "PlayFabId": currentPlayerId,
-		    "Data": commitData
+		    "Data": {"DungeonLevel":0,"TownLevel":0}
 		}
 	);
+    var allChars = server.GetAllUsersCharacters({
+        "PlayFabId": currentPlayerId
+    });
+    for (var i = 0; i < allCharacters.Characters.length; i++) {
+        var characterId = allCharacters.Characters[i].CharacterId;
+        server.UpdateCharacterData({
+            "PlayFabId": currentPlayerId,
+            "CharacterId": characterId,
+            "Data": { "SoulAttackLevel": 0, "SoulHitPointLevel": 0 }
+        });
+    }
+   
 };
