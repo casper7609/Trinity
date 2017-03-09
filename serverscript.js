@@ -574,7 +574,7 @@ handlers.ReturnToFirstTown = function (args)
 		    "Data": {"DungeonLevel":0,"TownLevel":0}
 		}
 	);
-    var allChars = server.GetAllUsersCharacters({
+    var allCharacters = server.GetAllUsersCharacters({
         "PlayFabId": currentPlayerId
     });
     for (var i = 0; i < allCharacters.Characters.length; i++) {
