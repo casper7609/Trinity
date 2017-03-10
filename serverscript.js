@@ -184,7 +184,7 @@ handlers.KilledMob = function (args)
             "Amount": cp
         }
     );
-    var result = { "ItemCount": items.length };
+    var result = { "ItemCount": items.length, "SP":sp, "SL":sl, "CP": cp };
     return result;
 };
 handlers.DecomposeItems = function (args) {
