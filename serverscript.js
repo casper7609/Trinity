@@ -404,11 +404,11 @@ handlers.RewardQuest = function (args) {
              ]
          }
      );
-    var dailyQuests = JSON.parse(userData.Data.DailyQuest.Value.replace(/\\/g, ""));
+    var dailyQuestSet = JSON.parse(userData.Data.DailyQuest.Value.replace(/\\/g, ""));
     var quest = null;
-    for (var i = 0; i < dailyQuests.length; i++) {
-        if (dailyQuests[i].QuestType == args.QuestType) {
-            quest = dailyQuests[i];
+    for (var i = 0; i < dailyQuestSet.Quests.length; i++) {
+        if (dailyQuestSet.Quests[i].QuestType == args.QuestType) {
+            quest = dailyQuestSet.Quests[i];
             break;
         }
     }
@@ -421,7 +421,7 @@ handlers.RewardQuest = function (args) {
         }
     );
     var commitData = {};
-    commitData["DailyQuest"] = JSON.stringify(dailyQuests);
+    commitData["DailyQuest"] = JSON.stringify(dailyQuestSet);
     server.UpdateUserData(
 		{
 		    "PlayFabId": currentPlayerId,
