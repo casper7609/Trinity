@@ -56,7 +56,7 @@ handlers.PurchaseCharacter = function (args) {
     log.info("characterId " + characterId);
     var classStatus = JSON.parse(args.ClassStatus);
     var luck = classStatus["Luck"];
-    delete classStatus["Luck"];
+    delete classStatus.Luck;
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
         "CharacterId": characterId,
