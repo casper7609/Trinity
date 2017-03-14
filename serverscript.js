@@ -209,6 +209,38 @@ handlers.DecomposeItems = function (args) {
     );
     return { "IP": totalPrice };
 };
+handlers.UpgradeItem = function (args) {
+    
+    var itemToUpgrade = JSON.parse(args.ItemInstance);
+    var str = itemToUpgrade.ItemId;
+    var rank = str.substring(str.lastIndexOf("_") + 1, str.lastIndexOf("_") + 2);
+    rank = parseInt(rank);
+    var RPToEnchant = Math.floor(enchantPriceInIP * Math.pow(1.4, rank));
+
+    var newItemId = str.substr(0, str.lastIndexOf("_")) + "_" + rank + str.substr(str.lastIndexOf("_") + 2);
+
+    var userInventory = server.GetUserInventory({
+        "PlayFabId": currentPlayerId
+    });
+
+    //check if sufficient fund
+    if (userInventory.VirtualCurrency == null
+        || userInventory.VirtualCurrency.RP == null
+        || parseInt(userInventory.VirtualCurrency.RP) < RPToEnchant) {
+        log.info("Insufficient Fund");
+        return { "Error": "Insufficient Fund" };
+    }
+    server.SubtractUserVirtualCurrency({
+        "PlayFabId": currentPlayerId,
+        "VirtualCurrency": "RP",
+        "Amount": RPToEnchant
+    });
+    server.GrantItemsToUser({
+        PlayFabId: currentPlayerId,
+        ItemIds: [newItemId]
+    });
+    return {};
+};
 handlers.EnchantItem = function (args) {
     var characterId = args.CharacterId;
     var itemToEnchant = JSON.parse(args.ItemInstance);
