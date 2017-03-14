@@ -55,20 +55,19 @@ handlers.PurchaseCharacter = function (args) {
     var characterId = grantCharResult.CharacterId;
     log.info("characterId " + characterId);
     var classStatus = JSON.parse(args.ClassStatus);
-    var dataToUpdate = { "Strength": classStatus.Strength, "Dexterity": classStatus.Dexterity, "Constitution": classStatus.Constitution, "Intelligence": classStatus.Intelligence, "Wisdom": classStatus.Wisdom };
-    log.info("dataToUpdate " + JSON.stringify(dataToUpdate));
-
+    var luck = classStatus["Luck"];
+    delete classStatus.Luck;
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
         "CharacterId": characterId,
-        "Data": dataToUpdate
+        "Data": classStatus
     });
     var isActive = allChars.Characters.length == 0;
     var isLeader = allChars.Characters.length == 0;
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
         "CharacterId": characterId,
-        "Data": { "Luck": classStatus.Luck, "IsActive": isActive, "IsLeader": isLeader, "Level": 0 }
+        "Data": { "Luck": luck, "IsActive": isActive, "IsLeader": isLeader, "Level": 0}
     });
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
