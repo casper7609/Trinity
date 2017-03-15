@@ -588,6 +588,22 @@ handlers.ReturnToFirstTown = function (args)
     var townLevel = parseInt(args.TownLevel);
     var amplifier = Math.floor(townLevel * 100 + (dungeonLevel + 1));
     var lp = Math.floor(lpDefault * Math.pow(1.2, amplifier));
+
+    var userInventory = server.GetUserInventory({
+        "PlayFabId": currentPlayerId
+    });
+    var sl = userInventory.VirtualCurrency.SL;
+    if (sl > 0)
+    {
+        server.SubtractUserVirtualCurrency(
+            {
+                "PlayFabId": currentPlayerId,
+                "VirtualCurrency": "SL",
+                "Amount": sl
+            }
+        );
+    }
+    
     if (gem == 0)
     {
     }
