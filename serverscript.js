@@ -240,11 +240,15 @@ handlers.UpgradeItem = function (args) {
         "ItemInstanceId": itemToUpgrade.ItemInstanceId,
         "ConsumeCount": 1
     });
+    log.info("newItemId " + newItemId);
     var itemGrantResults = server.GrantItemsToUser({
+        CatalogVersion: catalogVersion,
         PlayFabId: currentPlayerId,
+        Annotation: "ItemUpgrade",
         ItemIds: [newItemId]
     });
-    return { "NewItem": itemGrantResults[0] };
+    log.info("itemGrantResults " + JSON.stringify(itemGrantResults));
+    return { "NewItem": JSON.stringify(itemGrantResults[0]) };
 };
 handlers.EnchantItem = function (args) {
     var characterId = args.CharacterId;
