@@ -235,11 +235,16 @@ handlers.UpgradeItem = function (args) {
         "VirtualCurrency": "RP",
         "Amount": RPToEnchant
     });
-    server.GrantItemsToUser({
+    server.ConsumeItem({
+        "PlayFabId": currentPlayerId,
+        "ItemInstanceId": itemToUpgrade.ItemInstanceId,
+        "ConsumeCount": 1
+    });
+    var itemGrantResults = server.GrantItemsToUser({
         PlayFabId: currentPlayerId,
         ItemIds: [newItemId]
     });
-    return {};
+    return { "NewItem": itemGrantResults[0] };
 };
 handlers.EnchantItem = function (args) {
     var characterId = args.CharacterId;
