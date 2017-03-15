@@ -215,6 +215,7 @@ handlers.UpgradeItem = function (args) {
     var str = itemToUpgrade.ItemId;
     var rank = str.substring(str.lastIndexOf("_") + 1, str.lastIndexOf("_") + 2);
     rank = parseInt(rank);
+    rank++;
     var RPToEnchant = Math.floor(enchantPriceInIP * Math.pow(1.4, rank));
 
     var newItemId = str.substr(0, str.lastIndexOf("_")) + "_" + rank + str.substr(str.lastIndexOf("_") + 2);
@@ -248,7 +249,7 @@ handlers.UpgradeItem = function (args) {
         ItemIds: [newItemId]
     });
     log.info("itemGrantResults " + JSON.stringify(itemGrantResults));
-    return { "NewItem": JSON.stringify(itemGrantResults[0]) };
+    return { "NewItem": JSON.stringify(itemGrantResults.ItemGrantResults[0]) };
 };
 handlers.EnchantItem = function (args) {
     var characterId = args.CharacterId;
