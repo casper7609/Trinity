@@ -97,7 +97,7 @@ handlers.PurchaseCharacter = function (args) {
         "ItemIds": [itemId]
     });
     log.info("grantItemResult " + JSON.stringify(grantItemResult));
-    return characterId;
+    return { "CharacterId": characterId };
 };
 handlers.KilledMob = function (args)
 {
