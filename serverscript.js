@@ -16,16 +16,7 @@ handlers.PurchaseCharacter = function (args) {
     log.info("ClassStatus " + args.ClassStatus);
     var classType = args.ClassType;
 
-    var gemPrice = 0;
-    var allChars = server.GetAllUsersCharacters({
-        "PlayFabId": currentPlayerId
-    });
-    if (allChars.Characters.length < 4) {
-        gemPrice = 0;
-    }
-    else {
-        gemPrice = 400 * Math.pow(2, (allChars.Characters.length - 4));
-    }
+    var gemPrice = args.GemPrice;
     log.info("gemPrice " + gemPrice);
 
     var userInv = server.GetUserInventory({
