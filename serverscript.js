@@ -101,6 +101,7 @@ handlers.KilledMob = function (args)
         "PlayFabId": currentPlayerId
     });
     var items = [];
+    var realItems = [];
     var invMax = UserInventoryMax;
     var userData = server.GetUserData(
         {
@@ -136,6 +137,7 @@ handlers.KilledMob = function (args)
                     "ItemIds": items
                 }
             );
+            realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
             //add random stat here
             for (var i = 0; i < itemGrantResult.length; i++) {
                 //var arr = []
@@ -175,7 +177,11 @@ handlers.KilledMob = function (args)
             "Amount": cp
         }
     );
-    var result = { "ItemCount": items.length, "SP":sp, "SL":sl, "CP": cp };
+    var result = { "SP": sp, "SL": sl, "CP": cp };
+    if (realItems.length > 0)
+    {
+        result.Items = realItems;
+    }
     return result;
 };
 handlers.DecomposeItems = function (args) {
