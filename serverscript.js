@@ -94,9 +94,7 @@ handlers.KilledMob = function (args)
 {
     var mobType = args.MobType;
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var sp = Math.floor(spDefault * Math.pow(1.2, dungeonLevel));
     var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel));
-    var cp = Math.floor(cpDefault * Math.pow(1.2, dungeonLevel));
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
@@ -117,7 +115,7 @@ handlers.KilledMob = function (args)
     }
     if (userInventory.Inventory.length < invMax)
     {
-        var townId = "Town_" + Math.floor(dungeonLevel / 500);
+        var townId = "Town_" + args.TownLevel;
         var townItem = server.EvaluateRandomResultTable(
             {
                 "CatalogVersion": catalogVersion,
@@ -155,14 +153,6 @@ handlers.KilledMob = function (args)
             }
         }
     }
-    
-    server.AddUserVirtualCurrency(
-        {
-            "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "SP",
-            "Amount": sp
-        }
-    );
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
@@ -170,18 +160,63 @@ handlers.KilledMob = function (args)
             "Amount": sl
         }
     );
-    server.AddUserVirtualCurrency(
-        {
-            "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "CP",
-            "Amount": cp
-        }
-    );
     var result = { "SP": sp, "SL": sl, "CP": cp };
     if (realItems.length > 0)
     {
         result.Items = realItems;
     }
+    return result;
+};
+handlers.OpenTreasureBox = function (args) {
+    //args.TownId should be int
+    var townLevel = parseInt(args.TownLevel);
+    var thisTownId = "Town_" + townLevel;
+    var nextTownId = "Town_" + (townLevel < 29 ? townLevel + 1 : townLevel);
+    log.info("thisTownId " + thisTownId);
+    log.info("nextTownId " + nextTownId);
+    var items = [];
+
+    var nextTownItem = server.EvaluateRandomResultTable(
+        {
+            "CatalogVersion": catalogVersion,
+            "PlayFabId": currentPlayerId,
+            "TableId": nextTownId
+        }
+    );
+    if (nextTownItem.ResultItemId != "Nothing") {
+        log.info("item " + JSON.stringify(nextTownItem));
+        items.push(nextTownItem.ResultItemId);
+    }
+    else {
+        var thisTownItem = server.EvaluateRandomResultTable(
+            {
+                "CatalogVersion": catalogVersion,
+                "PlayFabId": currentPlayerId,
+                "TableId": thisTownId
+            }
+        );
+        if (thisTownItem.ResultItemId != "Nothing") {
+            log.info("item " + JSON.stringify(thisTownItem));
+            items.push(thisTownItem.ResultItemId);
+        }
+    }
+
+    var realItems = [];
+    if (items.length > 0) {
+        for (var i = 0; i < items.length; i++) {
+            var itemGrantResult = server.GrantItemsToUser(
+                {
+                    "CatalogVersion": catalogVersion,
+                    "PlayFabId": currentPlayerId,
+                    "ItemIds": items
+                }
+            );
+            realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
+            log.info("realItems " + JSON.stringify(realItems));
+        }
+    }
+
+    var result = { "Items": realItems };
     return result;
 };
 handlers.DecomposeItems = function (args) {
