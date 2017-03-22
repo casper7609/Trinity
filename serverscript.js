@@ -94,9 +94,7 @@ handlers.KilledMob = function (args)
 {
     var mobType = args.MobType;
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var sp = Math.floor(spDefault * Math.pow(1.2, dungeonLevel));
     var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel));
-    var cp = Math.floor(cpDefault * Math.pow(1.2, dungeonLevel));
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
@@ -159,25 +157,11 @@ handlers.KilledMob = function (args)
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "SP",
-            "Amount": sp
-        }
-    );
-    server.AddUserVirtualCurrency(
-        {
-            "PlayFabId": currentPlayerId,
             "VirtualCurrency": "SL",
             "Amount": sl
         }
     );
-    server.AddUserVirtualCurrency(
-        {
-            "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "CP",
-            "Amount": cp
-        }
-    );
-    var result = { "SP": sp, "SL": sl, "CP": cp };
+    var result = { "SL": sl };
     if (realItems.length > 0)
     {
         result.Items = realItems;
