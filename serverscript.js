@@ -93,8 +93,9 @@ handlers.PurchaseCharacter = function (args) {
 handlers.KilledMob = function (args)
 {
     var mobType = args.MobType;
+    var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel));
+    var sl = Math.floor(slDefault * Math.pow(1.2, (townLevel * 100 + dungeonLevel)));
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
@@ -218,6 +219,21 @@ handlers.OpenTreasureBox = function (args) {
     }
 
     var result = { "Items": realItems };
+    return result;
+};
+handlers.TakeScroll = function (args) {
+    //args.TownId should be int
+    var townLevel = parseInt(args.TownLevel);
+    var dungeonLevel = parseInt(args.DungeonLevel) + 1;
+    var sp = Math.floor(spDefault * Math.pow(1.2, (townLevel * 100 + dungeonLevel)));
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "SP",
+            "Amount": sp
+        }
+    );
+    var result = { "SP": sp };
     return result;
 };
 handlers.DecomposeItems = function (args) {
