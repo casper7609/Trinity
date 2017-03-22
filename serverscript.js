@@ -18,7 +18,9 @@ handlers.PurchaseCharacter = function (args) {
 
     var gemPrice = args.GemPrice;
     log.info("gemPrice " + gemPrice);
-
+    var allChars = server.GetAllUsersCharacters({
+        "PlayFabId": currentPlayerId
+    });
     var userInv = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
