@@ -97,7 +97,8 @@ handlers.KilledMob = function (args)
     var mobType = args.MobType;
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var sl = Math.floor(slDefault * Math.pow(1.2, (townLevel * 100 + dungeonLevel)));
+    var x = (townLevel * 100 + dungeonLevel);
+    var sl = slDefault + 10000 * x / (x + 20000);
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
@@ -637,8 +638,8 @@ handlers.ReturnToFirstTown = function (args)
     var gem = parseInt(args.Gem);
     var dungeonLevel = parseInt(args.DungeonLevel);
     var townLevel = parseInt(args.TownLevel);
-    var amplifier = Math.floor(townLevel * 100 + (dungeonLevel + 1));
-    var lp = Math.floor(lpDefault * Math.pow(1.2, amplifier));
+    var x = (townLevel * 100 + dungeonLevel);
+    var lp = lpDefault + 10000 * x / (x + 20000);
 
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
