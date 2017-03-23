@@ -98,7 +98,7 @@ handlers.KilledMob = function (args)
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
     var x = (townLevel * 100 + dungeonLevel);
-    var sl = slDefault + 10000 * x / (x + 20000);
+    var sl = Math.floor(slDefault + 10000 * x / (x + 20000));
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
