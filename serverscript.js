@@ -55,7 +55,7 @@ handlers.PurchaseCharacter = function (args) {
         "CharacterId": characterId,
         "Data": classStatus
     });
-    var isActive = allChars.Characters.length == 0;
+    var isActive = allChars.Characters.length <= 1;
     var isLeader = allChars.Characters.length == 0;
     server.UpdateCharacterData({
         "PlayFabId": currentPlayerId,
