@@ -695,5 +695,5 @@ handlers.ReturnToFirstTown = function (args)
             "Data": { "SoulAttackLevel": 0, "SoulHitPointLevel": 0 }
         });
     }
-   
+    return { "SL": sl, "LP" : lp };
 };
