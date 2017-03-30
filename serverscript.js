@@ -668,8 +668,9 @@ handlers.ReturnToFirstTown = function (args)
                 "Amount": gem
             }
         );
-        lp = Math.floor(lp * 2);
+        lp = lp * 2;
     }
+    lp = Math.ceil(lp);
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
