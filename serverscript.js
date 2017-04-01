@@ -98,7 +98,9 @@ handlers.KilledMob = function (args)
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
     var x = (townLevel * 100 + dungeonLevel);
-    var sl = Math.floor(slDefault + 10000 * x / (x + 20000));
+    var sl = 0;
+    var sp = 0;
+    var cp = 0;
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
@@ -157,15 +159,44 @@ handlers.KilledMob = function (args)
             }
         }
     }
+    //if normal
+    if (mobType == "Normal")
+    {
+        sl = Math.floor(slDefault + 10000 * x / (x + 20000));
+        server.AddUserVirtualCurrency(
+            {
+                "PlayFabId": currentPlayerId,
+                "VirtualCurrency": "SL",
+                "Amount": sl
+            }
+        );
+    }
+    else if (mobType == "NormalBoss")
+    {
+        sp = 1;
+        //if normal boss(Boss)
+        server.AddUserVirtualCurrency(
+            {
+                "PlayFabId": currentPlayerId,
+                "VirtualCurrency": "SP",
+                "Amount": sp
+            }
+        );
+    }
+    else if (mobType == "EliteBoss")
+    {
+        cp = 1;
+        //if elite boss
+        server.AddUserVirtualCurrency(
+            {
+                "PlayFabId": currentPlayerId,
+                "VirtualCurrency": "CP",
+                "Amount": cp
+            }
+        );
+    }
     
-    server.AddUserVirtualCurrency(
-        {
-            "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "SL",
-            "Amount": sl
-        }
-    );
-    var result = { "SL": sl };
+    var result = { "SL": sl, "SP": sp, "CP": cp };
     if (realItems.length > 0)
     {
         result.Items = realItems;
