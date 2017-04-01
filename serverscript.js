@@ -660,8 +660,10 @@ handlers.MassiveSoul = function (args) {
     {
         multiplier = 0;
     }
+    var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var sl = Math.floor(slDefault * Math.pow(1.2, dungeonLevel)) * multiplier;
+    var x = (townLevel * 100 + dungeonLevel);
+    var sl = Math.floor(slDefault + 10000 * x / (x + 20000)) * multiplier;
     if (gemPrice > 0)
     {
         server.SubtractUserVirtualCurrency(
