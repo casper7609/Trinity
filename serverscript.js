@@ -270,6 +270,21 @@ handlers.TakeScroll = function (args) {
     var result = { "SP": sp };
     return result;
 };
+handlers.TakeEmblem = function (args) {
+    //args.TownId should be int
+    var townLevel = parseInt(args.TownLevel);
+    var dungeonLevel = parseInt(args.DungeonLevel) + 1;
+    var rp = Math.floor(spDefault * Math.pow(1.2, (townLevel * 100 + dungeonLevel)));
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": "RP",
+            "Amount": rp
+        }
+    );
+    var result = { "RP": rp };
+    return result;
+};
 handlers.DecomposeItems = function (args) {
     var items = JSON.parse(args.Items);
     var totalPrice = 0;
