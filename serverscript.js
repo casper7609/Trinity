@@ -173,7 +173,7 @@ handlers.KilledMob = function (args)
     }
     else if (mobType == "NormalBoss")
     {
-        sp = 1;
+        sp = Math.floor(slDefault + 10000 * x / (x + 20000));
         //if normal boss(Boss)
         server.AddUserVirtualCurrency(
             {
@@ -185,7 +185,7 @@ handlers.KilledMob = function (args)
     }
     else if (mobType == "EliteBoss")
     {
-        cp = 1;
+        cp = Math.floor(slDefault + 10000 * x / (x + 20000));
         //if elite boss
         server.AddUserVirtualCurrency(
             {
@@ -259,7 +259,8 @@ handlers.TakeScroll = function (args) {
     //args.TownId should be int
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var sp = Math.floor(spDefault * Math.pow(1.2, (townLevel * 100 + dungeonLevel)));
+    var x = (townLevel * 100 + dungeonLevel);
+    var sp = Math.floor(slDefault + 10000 * x / (x + 20000));
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
@@ -274,7 +275,8 @@ handlers.TakeEmblem = function (args) {
     //args.TownId should be int
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
-    var rp = Math.floor(spDefault * Math.pow(1.2, (townLevel * 100 + dungeonLevel)));
+    var x = (townLevel * 100 + dungeonLevel);
+    var rp = Math.floor(slDefault + 10000 * x / (x + 20000));
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
