@@ -194,6 +194,8 @@ handlers.KilledMob = function (args)
 };
 function updateItemData(item)
 {
+    log.info("updateItemData " + JSON.stringify(item));
+
     var str = item.ItemId;
     var rank = str.substring(str.lastIndexOf("_") + 1, str.lastIndexOf("_") + 2);
     rank = parseInt(rank);
@@ -230,12 +232,14 @@ function updateItemData(item)
             etcOptions.splice(etcOptions.indexOf(picked), 1);
         }
     }
+    log.info("customData " + JSON.stringify(customData));
 
-    server.UpdateUserInventoryItemCustomData({
+    var result = server.UpdateUserInventoryItemCustomData({
         PlayFabId: currentPlayerId,
         ItemInstanceId: item.ItemInstanceId,
         Data: customData,
     });
+    log.info("result " + JSON.stringify(result));
 }
 handlers.OpenTreasureBox = function (args) {
     //args.TownId should be int
