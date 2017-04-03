@@ -285,6 +285,9 @@ handlers.OpenTreasureBox = function (args) {
             );
             realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
             log.info("realItems " + JSON.stringify(realItems));
+            for (var i = 0; i < realItems.length; i++) {
+                updateItemData(realItems[i]);
+            }
         }
     }
 
@@ -677,6 +680,9 @@ handlers.SummonItem = function (args) {
         }
     );
     realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
+    for (var i = 0; i < realItems.length; i++) {
+        updateItemData(realItems[i]);
+    }
     var result = {};
     result.Items = realItems;
     return result;
