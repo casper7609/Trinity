@@ -204,7 +204,7 @@ function updateItemData(item, characterId)
     rank = parseInt(rank);
     var chance = Math.min((rank + 1), 4);
     //var newItemId = str.substr(0, str.lastIndexOf("_")) + "_" + rank + str.substr(str.lastIndexOf("_") + 2);
-    var weaponOptions = ["Damage", "CoolTimeSpeed", "AttackSpeed", "CriticalChance", "CriticalDamage", "SoulGain"];
+    var weaponOptions = ["AttackPower", "CoolTimeSpeed", "AttackSpeed", "CriticalChance", "CriticalDamage", "SoulGain"];
     var etcOptions = ["MoveSpeed", "ArmorClass", "MagicRegistance", "HitPoint", "SoulGain"];
     var customData = { "Enchant": "0" };
     for (var i = 0; i < chance; i++) {
