@@ -144,17 +144,7 @@ handlers.KilledMob = function (args)
             realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
             //add random stat here
             for (var i = 0; i < itemGrantResult.length; i++) {
-                //var arr = []
-                //while(arr.length < 3){
-                //    var randomnumber = rand(0, 7);
-                //    if(arr.indexOf(randomnumber) > -1) continue;
-                //    arr[arr.length] = randomnumber;
-                //}
-                server.UpdateUserInventoryItemCustomData({
-                    PlayFabId: currentPlayerId,
-                    ItemInstanceId: itemGrantResult[i].ItemInstanceId,
-                    Data: { "Enchant": 0, "Strength": 10, "Dexterity": 10 },
-                });
+                updateItemData(itemGrantResult[i]);
             }
         }
     }
@@ -202,6 +192,51 @@ handlers.KilledMob = function (args)
     }
     return result;
 };
+function updateItemData(item)
+{
+    var str = item.ItemId;
+    var rank = str.substring(str.lastIndexOf("_") + 1, str.lastIndexOf("_") + 2);
+    rank = parseInt(rank);
+    var chance = Math.min((rank + 1), 4);
+    //var newItemId = str.substr(0, str.lastIndexOf("_")) + "_" + rank + str.substr(str.lastIndexOf("_") + 2);
+    var weaponOptions = ["Damage", "CoolTimeSpeed", "AttackSpeed", "CriticalChance", "CriticalDamage", "SoulGain"];
+    var etcOptions = ["MoveSpeed", "ArmorClass", "MagicRegistance", "HitPoint", "SoulGain"];
+    var customData = { "Enchant": 0 };
+    for (var i = 0; i < chance; i++) {
+        if (item.ItemClass == "Weapon") {
+            var picked = weaponOptions[Math.floor(Math.random() * weaponOptions.length)];
+            if (i == 0) {
+                customData["Main"] = picked;
+                customData[picked] = rand(100, (rank + 1) * 100);
+            }
+            else {
+                customData[picked] = rand(100, (rank) * 100);
+            }
+
+            options += picked + " ";
+            weaponOptions.splice(weaponOptions.indexOf(picked), 1);
+        }
+        else {
+            var picked = etcOptions[Math.floor(Math.random() * etcOptions.length)];
+            if (i == 0) {
+                customData["Main"] = picked;
+                customData[picked] = rand(100, (rank + 1) * 100);
+            }
+            else {
+                customData[picked] = rand(100, (rank) * 100);
+            }
+
+            options += picked + " ";
+            etcOptions.splice(etcOptions.indexOf(picked), 1);
+        }
+    }
+
+    server.UpdateUserInventoryItemCustomData({
+        PlayFabId: currentPlayerId,
+        ItemInstanceId: item.ItemInstanceId,
+        Data: customData,
+    });
+}
 handlers.OpenTreasureBox = function (args) {
     //args.TownId should be int
     var townLevel = parseInt(args.TownLevel);
