@@ -206,16 +206,16 @@ function updateItemData(item, characterId)
     //var newItemId = str.substr(0, str.lastIndexOf("_")) + "_" + rank + str.substr(str.lastIndexOf("_") + 2);
     var weaponOptions = ["Damage", "CoolTimeSpeed", "AttackSpeed", "CriticalChance", "CriticalDamage", "SoulGain"];
     var etcOptions = ["MoveSpeed", "ArmorClass", "MagicRegistance", "HitPoint", "SoulGain"];
-    var customData = { "Enchant": 0 };
+    var customData = { "Enchant": "0" };
     for (var i = 0; i < chance; i++) {
         if (item.ItemClass == "Weapon") {
             var picked = weaponOptions[Math.floor(Math.random() * weaponOptions.length)];
             if (i == 0) {
                 customData["Main"] = picked;
-                customData[picked] = rand(100, (rank + 1) * 100);
+                customData[picked] = rand(100, (rank + 1) * 100).toString();
             }
             else {
-                customData[picked] = rand(100, (rank) * 100);
+                customData[picked] = rand(100, (rank) * 100).toString();
             }
 
             weaponOptions.splice(weaponOptions.indexOf(picked), 1);
@@ -224,10 +224,10 @@ function updateItemData(item, characterId)
             var picked = etcOptions[Math.floor(Math.random() * etcOptions.length)];
             if (i == 0) {
                 customData["Main"] = picked;
-                customData[picked] = rand(100, (rank + 1) * 100);
+                customData[picked] = rand(100, (rank + 1) * 100).toString();
             }
             else {
-                customData[picked] = rand(100, (rank) * 100);
+                customData[picked] = rand(100, (rank) * 100).toString();
             }
 
             etcOptions.splice(etcOptions.indexOf(picked), 1);
