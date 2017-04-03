@@ -147,7 +147,7 @@ handlers.KilledMob = function (args)
             );
             var grantedItems = itemGrantResult["ItemGrantResults"];
             for (var i = 0; i < grantedItems.length; i++) {
-                realItems.push(updateItemData(grantedItems[i], characterId));
+                realItems.push(updateItemData(grantedItems[i]));
             }
         }
     }
@@ -294,7 +294,7 @@ handlers.OpenTreasureBox = function (args) {
             );
             var grantedItems = itemGrantResult["ItemGrantResults"];
             for (var i = 0; i < grantedItems.length; i++) {
-                realItems.push(updateItemData(grantedItems[i], characterId));
+                realItems.push(updateItemData(grantedItems[i]));
             }
         }
     }
@@ -689,7 +689,7 @@ handlers.SummonItem = function (args) {
     );
     var grantedItems = itemGrantResult["ItemGrantResults"];
     for (var i = 0; i < grantedItems.length; i++) {
-        realItems.push(updateItemData(grantedItems[i], characterId));
+        realItems.push(updateItemData(grantedItems[i]));
     }
     var result = {};
     result.Items = realItems;
