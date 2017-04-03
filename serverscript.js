@@ -152,8 +152,7 @@ handlers.KilledMob = function (args)
                 //}
                 server.UpdateUserInventoryItemCustomData({
                     PlayFabId: currentPlayerId,
-                    CharacterId: characterId,
-                    ItemInstanceId: itemToEnchant.ItemInstanceId,
+                    ItemInstanceId: itemGrantResult[i].ItemInstanceId,
                     Data: { "Enchant": 0, "Strength": 10, "Dexterity": 10 },
                 });
             }
@@ -293,10 +292,9 @@ handlers.DecomposeItems = function (args) {
     for (var i = 0; i < items.length; i++)
     {
         var itemInstance = items[i];
-        var consumeItemResult = server.ConsumeItem({
+        server.RevokeInventoryItem({
             "PlayFabId": currentPlayerId,
             "ItemInstanceId": itemInstance.ItemInstanceId,
-            "ConsumeCount": 1
         });
         totalPrice += itemInstance.UnitPrice;
     }
