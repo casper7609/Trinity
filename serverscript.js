@@ -98,6 +98,7 @@ handlers.KilledMob = function (args)
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
     var x = (townLevel * 100 + dungeonLevel);
+    var townId = "Town_" + parseInt(parseInt(townLevel) / 6);
     var sl = 0;
     var sp = 0;
     var cp = 0;
@@ -121,7 +122,6 @@ handlers.KilledMob = function (args)
     }
     if (userInventory.Inventory.length < invMax)
     {
-        var townId = "Town_" + args.TownLevel;
         var townItem = server.EvaluateRandomResultTable(
             {
                 "CatalogVersion": catalogVersion,
