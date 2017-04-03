@@ -215,7 +215,6 @@ function updateItemData(item)
                 customData[picked] = rand(100, (rank) * 100);
             }
 
-            options += picked + " ";
             weaponOptions.splice(weaponOptions.indexOf(picked), 1);
         }
         else {
@@ -228,7 +227,6 @@ function updateItemData(item)
                 customData[picked] = rand(100, (rank) * 100);
             }
 
-            options += picked + " ";
             etcOptions.splice(etcOptions.indexOf(picked), 1);
         }
     }
