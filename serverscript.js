@@ -82,14 +82,18 @@ handlers.PurchaseCharacter = function (args) {
     }
 
     log.info("itemId " + itemId);
-    var grantItemResult = server.GrantItemsToCharacter({
+    var itemGrantResult = server.GrantItemsToCharacter({
         "Annotation": "Char Creation Basic Item",
         "CatalogVersion": catalogVersion,
         "PlayFabId": currentPlayerId,
         "CharacterId": characterId,
         "ItemIds": [itemId]
     });
-    log.info("grantItemResult " + JSON.stringify(grantItemResult));
+    log.info("grantItemResult " + JSON.stringify(itemGrantResult));
+    var grantedItems = itemGrantResult["ItemGrantResults"];
+    for (var i = 0; i < grantedItems.length; i++) {
+        updateItemData(grantedItems[i], characterId);
+    }
     return { "CharacterId": characterId };
 };
 handlers.KilledMob = function (args)
@@ -141,10 +145,9 @@ handlers.KilledMob = function (args)
                     "ItemIds": items
                 }
             );
-            realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
-            //add random stat here
-            for (var i = 0; i < realItems.length; i++) {
-                updateItemData(realItems[i]);
+            var grantedItems = itemGrantResult["ItemGrantResults"];
+            for (var i = 0; i < grantedItems.length; i++) {
+                realItems.push(updateItemData(grantedItems[i], characterId));
             }
         }
     }
@@ -192,7 +195,7 @@ handlers.KilledMob = function (args)
     }
     return result;
 };
-function updateItemData(item)
+function updateItemData(item, characterId)
 {
     log.info("updateItemData " + JSON.stringify(item));
 
@@ -231,13 +234,19 @@ function updateItemData(item)
         }
     }
     log.info("customData " + JSON.stringify(customData));
-
-    var result = server.UpdateUserInventoryItemCustomData({
+    var updateData = {
         PlayFabId: currentPlayerId,
         ItemInstanceId: item.ItemInstanceId,
         Data: customData,
-    });
+    };
+    if (characterId != null)
+    {
+        updateData["CharacterId"] = characterId;
+    }
+    var result = server.UpdateUserInventoryItemCustomData(updateData);
     log.info("result " + JSON.stringify(result));
+    item["CustomData"] = customData;
+    return item;
 }
 handlers.OpenTreasureBox = function (args) {
     //args.TownId should be int
@@ -283,10 +292,9 @@ handlers.OpenTreasureBox = function (args) {
                     "ItemIds": items
                 }
             );
-            realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
-            log.info("realItems " + JSON.stringify(realItems));
-            for (var i = 0; i < realItems.length; i++) {
-                updateItemData(realItems[i]);
+            var grantedItems = itemGrantResult["ItemGrantResults"];
+            for (var i = 0; i < grantedItems.length; i++) {
+                realItems.push(updateItemData(grantedItems[i], characterId));
             }
         }
     }
@@ -679,9 +687,9 @@ handlers.SummonItem = function (args) {
             "ItemIds": items
         }
     );
-    realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
-    for (var i = 0; i < realItems.length; i++) {
-        updateItemData(realItems[i]);
+    var grantedItems = itemGrantResult["ItemGrantResults"];
+    for (var i = 0; i < grantedItems.length; i++) {
+        realItems.push(updateItemData(grantedItems[i], characterId));
     }
     var result = {};
     result.Items = realItems;
