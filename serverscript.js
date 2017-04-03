@@ -143,8 +143,8 @@ handlers.KilledMob = function (args)
             );
             realItems = realItems.concat(itemGrantResult["ItemGrantResults"]);
             //add random stat here
-            for (var i = 0; i < itemGrantResult.length; i++) {
-                updateItemData(itemGrantResult[i]);
+            for (var i = 0; i < realItems.length; i++) {
+                updateItemData(realItems[i]);
             }
         }
     }
