@@ -195,7 +195,7 @@ handlers.KilledMob = function (args)
     }
     return result;
 };
-function updateItemData(item, characterId)
+function updateItemData(item, characterId, mainFeature)
 {
     log.info("updateItemData " + JSON.stringify(item));
 
@@ -216,6 +216,10 @@ function updateItemData(item, characterId)
             var picked = weaponMainOptions[Math.floor(Math.random() * weaponMainOptions.length)];
             if (i == 0)
             {
+                if (mainFeature != null)
+                {
+                    picked = mainFeature;
+                }
                 customData["Main"] = picked;
                 customData[picked] = rand(100, (rank + 1) * 100).toString();
             }
@@ -229,6 +233,9 @@ function updateItemData(item, characterId)
         else if (item.ItemClass == "Armor") {
             var picked = armorMainOptions[Math.floor(Math.random() * armorMainOptions.length)];
             if (i == 0) {
+                if (mainFeature != null) {
+                    picked = mainFeature;
+                }
                 customData["Main"] = picked;
                 customData[picked] = rand(100, (rank + 1) * 100).toString();
             }
@@ -242,6 +249,9 @@ function updateItemData(item, characterId)
         {
             var picked = "";
             if (i == 0) {
+                if (mainFeature != null) {
+                    picked = mainFeature;
+                }
                 picked = accessoryMainOptions[Math.floor(Math.random() * accessoryMainOptions.length)];
                 customData["Main"] = picked;
                 customData[picked] = rand(100, (rank + 1) * 100).toString();
@@ -387,7 +397,7 @@ handlers.UpgradeItem = function (args) {
     var RPToEnchant = Math.floor(enchantPriceInIP * Math.pow(1.4, rank));
 
     var newItemId = str.substr(0, str.lastIndexOf("_")) + "_" + rank + str.substr(str.lastIndexOf("_") + 2);
-
+    var mainFeature = itemToUpgrade.CustomData.Main;
     var userInventory = server.GetUserInventory({
         "PlayFabId": currentPlayerId
     });
@@ -404,20 +414,48 @@ handlers.UpgradeItem = function (args) {
         "VirtualCurrency": "RP",
         "Amount": RPToEnchant
     });
-    server.ConsumeItem({
-        "PlayFabId": currentPlayerId,
-        "ItemInstanceId": itemToUpgrade.ItemInstanceId,
-        "ConsumeCount": 1
-    });
+    var characterId = args.CharacterId;
+    var itemGrantResults = null;
     log.info("newItemId " + newItemId);
-    var itemGrantResults = server.GrantItemsToUser({
-        CatalogVersion: catalogVersion,
-        PlayFabId: currentPlayerId,
-        Annotation: "ItemUpgrade",
-        ItemIds: [newItemId]
-    });
-    log.info("itemGrantResults " + JSON.stringify(itemGrantResults));
-    return { "NewItem": JSON.stringify(itemGrantResults.ItemGrantResults[0]) };
+    var newItem = null;
+    if (characterId == null || characterId == "") {
+        server.RevokeInventoryItem({
+            "PlayFabId": currentPlayerId,
+            "ItemInstanceId": itemToUpgrade.ItemInstanceId,
+        });
+        itemGrantResults = server.GrantItemsToUser({
+            CatalogVersion: catalogVersion,
+            PlayFabId: currentPlayerId,
+            Annotation: "ItemUpgrade",
+            ItemIds: [newItemId]
+        });
+        var grantedItems = itemGrantResult["ItemGrantResults"];
+        for (var i = 0; i < grantedItems.length; i++) {
+            newItem = updateItemData(grantedItems[i], null, mainFeature);
+        }
+    }
+    else
+    {
+        server.RevokeInventoryItem({
+            "PlayFabId": currentPlayerId,
+            "CharacterId": characterId,
+            "ItemInstanceId": itemToUpgrade.ItemInstanceId,
+        });
+        itemGrantResults = server.GrantItemsToCharacter({
+            CatalogVersion: catalogVersion,
+            CharacterId: characterId,
+            PlayFabId: currentPlayerId,
+            Annotation: "ItemUpgrade",
+            ItemIds: [newItemId]
+        });
+        var grantedItems = itemGrantResult["ItemGrantResults"];
+        for (var i = 0; i < grantedItems.length; i++) {
+            newItem = updateItemData(grantedItems[i], characterId, mainFeature);
+        }
+    }
+    log.info("itemGrantResults " + JSON.stringify(newItem));
+   
+    return { "NewItem": JSON.stringify(newItem) };
 };
 handlers.EnchantItem = function (args) {
     var characterId = args.CharacterId;
