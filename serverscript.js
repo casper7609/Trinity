@@ -415,7 +415,7 @@ handlers.UpgradeItem = function (args) {
         "Amount": RPToEnchant
     });
     var characterId = args.CharacterId;
-    var itemGrantResults = null;
+    var itemGrantResult = null;
     log.info("newItemId " + newItemId);
     var newItem = null;
     if (characterId == null || characterId == "") {
@@ -423,7 +423,7 @@ handlers.UpgradeItem = function (args) {
             "PlayFabId": currentPlayerId,
             "ItemInstanceId": itemToUpgrade.ItemInstanceId,
         });
-        itemGrantResults = server.GrantItemsToUser({
+        itemGrantResult = server.GrantItemsToUser({
             CatalogVersion: catalogVersion,
             PlayFabId: currentPlayerId,
             Annotation: "ItemUpgrade",
@@ -441,7 +441,7 @@ handlers.UpgradeItem = function (args) {
             "CharacterId": characterId,
             "ItemInstanceId": itemToUpgrade.ItemInstanceId,
         });
-        itemGrantResults = server.GrantItemsToCharacter({
+        itemGrantResult = server.GrantItemsToCharacter({
             CatalogVersion: catalogVersion,
             CharacterId: characterId,
             PlayFabId: currentPlayerId,
