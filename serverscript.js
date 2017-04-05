@@ -298,7 +298,7 @@ function updateItemData(item, characterId, mainFeature)
     }
     log.info("cData " + JSON.stringify(cData));
     log.info("cData length " + Object.keys(cData).length);
-    if (Object.keys(cData).length < 5)
+    if (Object.keys(cData).length > 0 && Object.keys(cData).length < 5)
     {
         var updateData = {
             PlayFabId: currentPlayerId,
