@@ -293,6 +293,19 @@ function updateItemData(item, characterId, mainFeature)
             cData = {};
         }
     }
+    if (Object.keys(obj).length < 4)
+    {
+        var updateData = {
+            PlayFabId: currentPlayerId,
+            ItemInstanceId: item.ItemInstanceId,
+            Data: cData,
+        };
+        if (characterId != null) {
+            updateData["CharacterId"] = characterId;
+        }
+        var result = server.UpdateUserInventoryItemCustomData(updateData);
+        log.info("commit " + JSON.stringify(cData));
+    }
 
     log.info("customData " + JSON.stringify(customData));
     item["CustomData"] = customData;
