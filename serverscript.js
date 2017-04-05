@@ -265,6 +265,8 @@ function updateItemData(item, characterId, mainFeature)
             commonOptions.splice(commonOptions.indexOf(picked), 1);
         }
     }
+    
+    log.info("customData length " + Object.keys(customData).length);
     log.info("customData " + JSON.stringify(customData));
     var updateData = {
         PlayFabId: currentPlayerId,
