@@ -208,6 +208,7 @@ function updateItemData(item, characterId, mainFeature)
     var armorMainOptions = ["MoveSpeed", "ArmorClass", "MagicResistance", "HitPoint", "SoulGain"];
     var accessoryMainOptions = ["AttackPower", "ArmorClass", "MagicResistance", "CriticalChance", "CriticalDamage", "SoulGain"];
     var commonOptions = ["AttackPower", "CoolTimeReduction", "AttackSpeed", "MoveSpeed", "ArmorClass", "MagicResistance", "HitPoint", "CriticalChance", "CriticalDamage", "SoulGain"];
+    var fArray = [];
     var customData = { "Enchant": "0" };
     for (var i = 0; i < chance; i++)
     {
@@ -221,13 +222,15 @@ function updateItemData(item, characterId, mainFeature)
                     picked = mainFeature;
                 }
                 customData["Main"] = picked;
+                fArray.push({ "Key": "Main", "Value": picked });
                 customData[picked] = rand(100, (rank + 1) * 100).toString();
+                fArray.push({ "Key": picked, "Value": customData[picked] });
             }
             else
             {
                 customData[picked] = rand(100, (rank) * 100).toString();
+                fArray.push({ "Key": picked, "Value": customData[picked] });
             }
-
             weaponMainOptions.splice(weaponMainOptions.indexOf(picked), 1);
         }
         else if (item.ItemClass == "Armor") {
@@ -237,10 +240,13 @@ function updateItemData(item, characterId, mainFeature)
                     picked = mainFeature;
                 }
                 customData["Main"] = picked;
+                fArray.push({ "Key": "Main", "Value": picked });
                 customData[picked] = rand(100, (rank + 1) * 100).toString();
+                fArray.push({ "Key": picked, "Value": customData[picked] });
             }
             else {
                 customData[picked] = rand(100, (rank) * 100).toString();
+                fArray.push({ "Key": picked, "Value": customData[picked] });
             }
 
             armorMainOptions.splice(armorMainOptions.indexOf(picked), 1);
@@ -254,31 +260,41 @@ function updateItemData(item, characterId, mainFeature)
                 }
                 picked = accessoryMainOptions[Math.floor(Math.random() * accessoryMainOptions.length)];
                 customData["Main"] = picked;
+                fArray.push({ "Key": "Main", "Value": picked });
                 customData[picked] = rand(100, (rank + 1) * 100).toString();
+                fArray.push({ "Key": picked, "Value": customData[picked] });
             }
             else {
                 picked = commonOptions[Math.floor(Math.random() * commonOptions.length)];
                 customData[picked] = rand(100, (rank) * 100).toString();
+                fArray.push({ "Key": picked, "Value": customData[picked] });
             }
 
             accessoryMainOptions.splice(accessoryMainOptions.indexOf(picked), 1);
             commonOptions.splice(commonOptions.indexOf(picked), 1);
         }
     }
-    
-    log.info("customData length " + Object.keys(customData).length);
-    log.info("customData " + JSON.stringify(customData));
-    var updateData = {
-        PlayFabId: currentPlayerId,
-        ItemInstanceId: item.ItemInstanceId,
-        Data: customData,
-    };
-    if (characterId != null)
+    var cData = {};
+    for (var i = 0; i < fArray.length; i++)
     {
-        updateData["CharacterId"] = characterId;
+        cData[fArray[i].Key] = fArray[i].Value;
+        if (i > 0 && i % 4 == 0)
+        {
+            var updateData = {
+                PlayFabId: currentPlayerId,
+                ItemInstanceId: item.ItemInstanceId,
+                Data: cData,
+            };
+            if (characterId != null) {
+                updateData["CharacterId"] = characterId;
+            }
+            var result = server.UpdateUserInventoryItemCustomData(updateData);
+            log.info("commit " + JSON.stringify(cData));
+            cData = {};
+        }
     }
-    var result = server.UpdateUserInventoryItemCustomData(updateData);
-    log.info("result " + JSON.stringify(result));
+
+    log.info("customData " + JSON.stringify(customData));
     item["CustomData"] = customData;
     return item;
 }
