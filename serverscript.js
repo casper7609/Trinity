@@ -296,6 +296,8 @@ function updateItemData(item, characterId, mainFeature)
             cData = {};
         }
     }
+    log.info("cData " + JSON.stringify(cData));
+    log.info("cData length " + Object.keys(cData).length);
     if (Object.keys(cData).length < 4)
     {
         var updateData = {
