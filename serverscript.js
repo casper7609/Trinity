@@ -275,9 +275,12 @@ function updateItemData(item, characterId, mainFeature)
         }
     }
     var cData = {};
+    log.info("fArray " + JSON.stringify(fArray));
     for (var i = 0; i < fArray.length; i++)
     {
         cData[fArray[i].Key] = fArray[i].Value;
+        log.info("i " + i);
+        log.info("i % 4 " + (i % 4));
         if (i > 0 && i % 4 == 0)
         {
             var updateData = {
