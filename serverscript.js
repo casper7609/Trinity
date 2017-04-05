@@ -210,6 +210,7 @@ function updateItemData(item, characterId, mainFeature)
     var commonOptions = ["AttackPower", "CoolTimeReduction", "AttackSpeed", "MoveSpeed", "ArmorClass", "MagicResistance", "HitPoint", "CriticalChance", "CriticalDamage", "SoulGain"];
     var fArray = [];
     var customData = { "Enchant": "0" };
+    fArray.push({ "Key": "Enchant", "Value": "0" });
     for (var i = 0; i < chance; i++)
     {
         if (item.ItemClass == "Weapon")
