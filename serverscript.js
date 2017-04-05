@@ -293,7 +293,7 @@ function updateItemData(item, characterId, mainFeature)
             cData = {};
         }
     }
-    if (Object.keys(obj).length < 4)
+    if (Object.keys(cData).length < 4)
     {
         var updateData = {
             PlayFabId: currentPlayerId,
