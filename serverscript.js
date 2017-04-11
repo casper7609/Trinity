@@ -276,12 +276,9 @@ function updateItemData(item, characterId, mainFeature)
         }
     }
     var cData = {};
-    log.info("fArray " + JSON.stringify(fArray));
     for (var i = 0; i < fArray.length; i++)
     {
         cData[fArray[i].Key] = fArray[i].Value;
-        log.info("i " + i);
-        log.info("i % 4 " + (i % 4));
         if (i > 0 && i % 4 == 0)
         {
             var updateData = {
@@ -293,12 +290,9 @@ function updateItemData(item, characterId, mainFeature)
                 updateData["CharacterId"] = characterId;
             }
             var result = server.UpdateUserInventoryItemCustomData(updateData);
-            log.info("commit " + JSON.stringify(cData));
             cData = {};
         }
     }
-    log.info("cData " + JSON.stringify(cData));
-    log.info("cData length " + Object.keys(cData).length);
     if (Object.keys(cData).length > 0 && Object.keys(cData).length < 5)
     {
         var updateData = {
@@ -313,7 +307,6 @@ function updateItemData(item, characterId, mainFeature)
         log.info("commit " + JSON.stringify(cData));
     }
 
-    log.info("customData " + JSON.stringify(customData));
     item["CustomData"] = customData;
     return item;
 }
