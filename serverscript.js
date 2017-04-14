@@ -100,6 +100,7 @@ handlers.KilledMob = function (args)
 {
     var mobType = args.MobType;
     var townLevel = parseInt(args.TownLevel);
+    var soulGainAmplifier = parseFloat(args.SoulGainAmplifier) + 1;
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
     var x = (townLevel * 100 + dungeonLevel);
     var townId = "Town_" + parseInt(parseInt(townLevel) / 6);
@@ -154,7 +155,7 @@ handlers.KilledMob = function (args)
     //if normal
     if (mobType == "Normal")
     {
-        sl = Math.floor(slDefault + 10000 * x / (x + 20000));
+        sl = Math.floor((slDefault + 10000 * x / (x + 20000)) * soulGainAmplifier);
         server.AddUserVirtualCurrency(
             {
                 "PlayFabId": currentPlayerId,
