@@ -898,7 +898,7 @@ handlers.MapQuestReward = function (args) {
         }
     );
     var mapQuests = JSON.parse(userData.Data.MapQuest.Value.replace(/\\/g, ""));
-    var quest = mapQuests.Quests[parseInt(args.QuestIndex)];
+    var quest = mapQuests[parseInt(args.QuestIndex)];
     quest.Hrr = true;
     server.AddUserVirtualCurrency(
         {
