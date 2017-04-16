@@ -888,3 +888,32 @@ handlers.ReturnToFirstTown = function (args)
     }
     return { "SL": sl, "LP" : lp };
 };
+handlers.MapQuestReward = function (args) {
+    var userData = server.GetUserData(
+        {
+            "PlayFabId": currentPlayerId,
+            "Keys": [
+                "MapQuest"
+            ]
+        }
+    );
+    var mapQuests = JSON.parse(userData.Data.DailyQuest.Value.replace(/\\/g, ""));
+    var quest = mapQuests.Quests[parseInt(args.QuestIndex)];
+    quest.Hrr = true;
+    server.AddUserVirtualCurrency(
+        {
+            "PlayFabId": currentPlayerId,
+            "VirtualCurrency": quest.Qrt,
+            "Amount": parseInt(quest.Cnt)
+        }
+    );
+    var commitData = {};
+    commitData["MapQuest"] = JSON.stringify(mapQuests);
+    server.UpdateUserData(
+		{
+		    "PlayFabId": currentPlayerId,
+		    "Data": commitData
+		}
+	);
+    return {};
+};
