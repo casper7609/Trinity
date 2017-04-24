@@ -779,11 +779,18 @@ handlers.SummonItem = function (args) {
         }
     );
     var grantedItems = itemGrantResult["ItemGrantResults"];
-    //for (var i = 0; i < grantedItems.length; i++) {
-    //    realItems.push(updateItemData(grantedItems[i]));
-    //}dd
     var result = {};
     result.Items = grantedItems;
+    return result;
+};
+handlers.UpdateSummonItemData = function (args) {
+    log.info("PlayFabId " + args.PlayFabId);
+    var items = args.Items;
+    for (var i = 0; i < items.length; i++) {
+        realItems.push(updateItemData(items[i]));
+    }
+    var result = {};
+    result.Items = realItems;
     return result;
 };
 handlers.MassiveSoul = function (args) {
