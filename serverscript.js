@@ -779,11 +779,11 @@ handlers.SummonItem = function (args) {
         }
     );
     var grantedItems = itemGrantResult["ItemGrantResults"];
-    for (var i = 0; i < grantedItems.length; i++) {
-        realItems.push(updateItemData(grantedItems[i]));
-    }
+    //for (var i = 0; i < grantedItems.length; i++) {
+    //    realItems.push(updateItemData(grantedItems[i]));
+    //}
     var result = {};
-    result.Items = realItems;
+    result.Items = grantedItems;
     return result;
 };
 handlers.MassiveSoul = function (args) {
@@ -791,10 +791,10 @@ handlers.MassiveSoul = function (args) {
     var multiplier = 10;
     if (gemPrice == 0)
     {
-        multiplier = 10;
+        multiplier = 100;
     }
     else if (gemPrice == 50) {
-        multiplier = 100;
+        multiplier = 1000;
     }
     else
     {
