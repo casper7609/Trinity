@@ -786,6 +786,7 @@ handlers.SummonItem = function (args) {
 handlers.UpdateSummonItemData = function (args) {
     log.info("PlayFabId " + args.PlayFabId);
     var items = args.Items;
+    var realItems = [];
     for (var i = 0; i < items.length; i++) {
         realItems.push(updateItemData(items[i]));
     }
