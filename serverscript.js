@@ -570,7 +570,7 @@ handlers.InAppPurchase = function (args) {
             "Date": 1,
             "NextTime": getKoreanTomorrow()
         });
-        GrantItems(currentPlayerId, "GP100", "30일 패키지 보상입니다. ( " + 0 + "일)");
+        GrantItems(currentPlayerId, "GP300", "30일 패키지 보상입니다. ( " + 1 + "일)");
         server.UpdateUserReadOnlyData(monUpdateUserReadOnlyDataRequest);
     }
 };
@@ -595,7 +595,7 @@ handlers.CheckMonthlySubscription = function (args) {
             var currentTime = new Date().getTime();
             //after one day
             if (tracker.NextTime < currentTime) {
-                GrantItems(currentPlayerId, "GP300", "30일 패키지 보상입니다. (" + tracker.Date + " 일)");
+                GrantItems(currentPlayerId, "GP100", "30일 패키지 보상입니다. (" + (parseInt(tracker.Date) + 1) + " 일)");
                 tracker.NextTime = getKoreanTomorrow();
                 tracker.Date++;
                 if (tracker.Date >= 30) {
