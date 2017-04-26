@@ -386,15 +386,39 @@ handlers.TakeEmblem = function (args) {
     var townLevel = parseInt(args.TownLevel);
     var dungeonLevel = parseInt(args.DungeonLevel) + 1;
     var x = (townLevel * 100 + dungeonLevel);
-    var rp = Math.floor(slDefault + 10000 * x / (x + 20000));
+    var type = rand(0, 100);
+    var typeStr = "";
+    var amount = 1;
+    if (type < 20)
+    {
+        typeStr = "SL";
+        amount *= x;
+    }
+    else if (type <= 20 && type < 40)
+    {
+        typeStr = "LP";
+    }
+    else if (type <= 40 && type < 60) {
+        typeStr = "CP";
+    }
+    else if (type <= 60 && type < 80) {
+        typeStr = "SP";
+    }
+    else if (type <= 80 && type < 90) {
+        typeStr = "RP";
+    }
+    else if (type <= 90 && type < 100) {
+        typeStr = "GP";
+    }
     server.AddUserVirtualCurrency(
         {
             "PlayFabId": currentPlayerId,
-            "VirtualCurrency": "RP",
-            "Amount": rp
+            "VirtualCurrency": typeStr,
+            "Amount": amount
         }
     );
-    var result = { "RP": rp };
+    var result = {};
+    result[typeStr] = amount;
     return result;
 };
 handlers.DecomposeItems = function (args) {
